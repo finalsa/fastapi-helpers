@@ -5,13 +5,14 @@ from fastapi_helpers.routes import (
     DefaultModelRouter,
     load_data_callback,
     Pagination,
+    paginate_object
 )
 from fastapi_helpers.crud import BaseCrud, to_dict
 from fastapi_helpers.security import Encoder
 from fastapi_helpers.settings import DefaultSettings
 from fastapi_helpers.db import DbConfig
 
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 
 __all__ = [
     "Worker",
@@ -20,6 +21,7 @@ __all__ = [
     "HeadersMiddleware",
     "DefaultModelRouter",
     "load_data_callback",
+    "paginate_object",
     "Pagination",
     "BaseCrud",
     "to_dict",
