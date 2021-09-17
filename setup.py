@@ -57,13 +57,16 @@ setup(
     package_data={PACKAGE: ["py.typed"]},
     include_package_data=True,
     zip_safe=False,
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     data_files=[("", ["LICENSE.md"])],
     install_requires=[
-        "ormar>=0.3.2,<0.5.2",
-        "pydantic>=1.6.1,!=1.7,!=1.7.1,!=1.7.2,!=1.7.3,!=1.8,!=1.8.1,<=1.8.2",
+        "argon2-cffi>=21.0.0",
+        "ormar>=0.10.0",
+        'pydantic>=1.8.2',
         "fastapi>=0.67.0,<=0.68.1",
         "typing_extensions>=3.7,<3.10.0.3",
+        "watchtower>=1.0.6",
+        "boto3>=1.18.0"
     ],
     extras_require={
         "postgresql": ["asyncpg", "psycopg2-binary"],

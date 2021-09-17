@@ -3,7 +3,11 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi import Response, status, Request
 from ..logging import DefaultLogger
 from time import time
-from orjson import dumps
+
+try:
+    from orjson import dumps
+except ImportError:
+    from json import dumps
 
 class HeadersMiddleware(BaseHTTPMiddleware):
 
