@@ -6,7 +6,7 @@ import re
 
 from setuptools import setup
 
-PACKAGE = "fastapiutils"
+PACKAGE = "fastapi_utils"
 URL = "https://github.com/finalsa/fastapi-utils"
 
 

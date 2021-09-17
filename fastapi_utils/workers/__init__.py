@@ -1,11 +1,11 @@
 from sqlalchemy.pool import NullPool
-from db import DbConfig
-import logging
-
+from fastapi_utils.db import DbConfig
+from fastapi_utils.logging import DefaultLogger
 
 class Worker:
 
     db_config: DbConfig
+    logger: DefaultLogger
 
     @classmethod
     def use_db_connection(cls, func):
@@ -17,7 +17,7 @@ class Worker:
             try:
                 result = await func(*args, **kwargs)
             except Exception as ex:
-                logging.error(ex)
+                cls.logger.error(ex)
             await cls.db_config.disconnect_db()
             return result
         return wrap

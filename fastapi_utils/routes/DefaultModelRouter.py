@@ -1,7 +1,7 @@
 from typing import Any, Dict
 from fastapi import APIRouter, Request, Depends
 from ormar import Model
-from ..crud import BaseCrud
+from fastapi_utils.crud import BaseCrud
 from .Paginate import Pagination
 
 

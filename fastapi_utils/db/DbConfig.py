@@ -2,7 +2,7 @@ from databases import Database
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.engine import Engine
 from contextlib import closing
-from ..logging import DefaultLogger
+from fastapi_utils.logging import DefaultLogger
 
 
 class DbConfig():
