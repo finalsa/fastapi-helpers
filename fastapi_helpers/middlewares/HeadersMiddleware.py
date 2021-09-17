@@ -1,7 +1,7 @@
 from typing import Dict
 from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi import Response, status, Request
-from fastapi_utils.logging import DefaultLogger
+from fastapi_helpers.logging import DefaultLogger
 from time import time
 
 try:

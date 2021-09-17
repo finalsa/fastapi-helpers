@@ -1,6 +1,6 @@
 from os import path
 from json import loads
-from fastapi_utils.crud import BaseCrud
+from fastapi_helpers.crud import BaseCrud
 
 
 

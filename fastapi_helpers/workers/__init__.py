@@ -1,6 +1,6 @@
 from sqlalchemy.pool import NullPool
-from fastapi_utils.db import DbConfig
-from fastapi_utils.logging import DefaultLogger
+from fastapi_helpers.db import DbConfig
+from fastapi_helpers.logging import DefaultLogger
 
 class Worker:
 

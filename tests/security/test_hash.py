@@ -1,5 +1,5 @@
 from unittest import TestCase
-from fastapi_utils import Encoder
+from fastapi_helpers import Encoder
 
 
 class SecurityTest(TestCase):
