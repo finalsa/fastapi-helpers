@@ -1,5 +1,5 @@
 from ormar import Model
-from routes.utils.paginate import paginate_object, load_data_callback, Pagination
+from routes.Paginate import paginate_object, load_data_callback, Pagination
 from fastapi import HTTPException
 from typing import Any, Type
 

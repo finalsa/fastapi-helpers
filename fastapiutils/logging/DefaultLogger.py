@@ -10,7 +10,8 @@ BOLD_SEQ = "\033[1m"
 def formatter_message(message, use_color=True):
     if use_color:
         message = message.replace(
-            "$RESET", RESET_SEQ).replace("$BOLD", BOLD_SEQ)
+            "$RESET", RESET_SEQ
+        ).replace("$BOLD", BOLD_SEQ)
     else:
         message = message.replace("$RESET", "").replace("$BOLD", "")
     return message
@@ -24,7 +25,6 @@ class DefaultLogger(logging.Logger):
         super().__init__(f"{name}")
         if(settings.is_production()):
             handler = watchtower.CloudWatchLogHandler(log_group=settings.app_name, use_queues = False)
-            handler.flush()
             self.addHandler(handler)
         else:
             color_formatter = ColoredFormatter(self.COLOR_FORMAT)
