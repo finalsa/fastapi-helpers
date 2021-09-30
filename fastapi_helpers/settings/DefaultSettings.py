@@ -4,7 +4,7 @@ from typing import Optional
 
 class DefaultSettings(BaseSettings):
 
-    app_name: Optional[str] = "ap-buro-credito"
+    app_name: Optional[str] = ""
     db_url: Optional[str] = ""
     host: Optional[str] = ""
     env: Optional[str] = "dev"

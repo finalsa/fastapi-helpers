@@ -19,7 +19,7 @@ class DefaultModelRouter():
         self.router.add_api_route("/{id}/", self.read, methods=["GET"])
         self.router.add_api_route("/", self.create, methods=["POST"])
         self.router.add_api_route("/{id}/", self.update, methods=["PUT"])
-        self.router.add_api_route("/{id}/", self.delete, methods=["DELETe"])
+        self.router.add_api_route("/{id}/", self.delete, methods=["DELETE"])
 
 
     async def read_list(
