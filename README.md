@@ -35,7 +35,7 @@ from .config import settings
 logger = DefaultLogger("your-app-name", settings)
 ```
 
-If you need to connect to a router super fast, the only thing you need to do is to:
+If you need to connect to a db super fast, the only thing you need to do is to:
 
 ```python
 from fastapi_helpers import DbConfig
