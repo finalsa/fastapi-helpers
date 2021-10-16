@@ -32,7 +32,7 @@ If you need a logger, it includes an implemntation a colored console, and in pro
 from fastapi_helpers import DefaultLogger
 from .config import settings
 
-logger = DefaultLogger("fingeprint", settings)
+logger = DefaultLogger("your-app-name", settings)
 ```
 
 If you need to connect to a router super fast, the only thing you need to do is to:
