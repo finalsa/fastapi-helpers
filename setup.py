@@ -61,12 +61,12 @@ setup(
     data_files=[("", ["LICENSE.md"])],
     install_requires=[
         "argon2-cffi>=21.0.0",
-        "ormar>=0.10.0",
+        "ormar>=0.10.20",
         'pydantic>=1.8.2',
-        "fastapi>=0.67.0,<=0.68.1",
+        "fastapi>=0.68.1,<=0.70.0",
         "typing_extensions>=3.7,<3.10.0.3",
         "watchtower>=1.0.6",
-        "boto3>=1.18.0"
+        "boto3>=1.20.3"
     ],
     extras_require={
         "postgresql": ["asyncpg", "psycopg2-binary"],
