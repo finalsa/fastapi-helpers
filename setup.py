@@ -76,5 +76,11 @@ setup(
         "crypto": ["cryptography"],
     },
     classifiers=[
+        "fastapi",
+        "ormar",
+        "pydantic",
+        "logger",
+        "aws",
+        "typing"
     ],
 )
