@@ -3,7 +3,7 @@ from sqlalchemy import create_engine, MetaData
 from sqlalchemy.engine import Engine
 from contextlib import closing
 from fastapi_helpers.logging import DefaultLogger
-
+from ..settings import DefaultSettings
 
 class DbConfig():
 
@@ -13,8 +13,8 @@ class DbConfig():
     database: Database
     logger: DefaultLogger
 
-    def __init__(self, settings, logger: DefaultLogger) -> None:
-        self.db_url = settings.db_url
+    def __init__(self, settings: DefaultSettings, logger: DefaultLogger) -> None:
+        self.db_url = settings.get_db_url()
         self.metadata = MetaData()
         self.database = Database(self.db_url)
         self.logger = logger

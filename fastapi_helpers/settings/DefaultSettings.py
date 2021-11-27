@@ -15,7 +15,15 @@ class DefaultSettings(BaseSettings):
         return (self.env.lower() == 'dev')
 
     def is_production(self,):
-        return (self.env.lower() != 'dev')
+        return (self.env.lower() == 'prod')
+    
+    def is_test(self,):
+        return (self.env.lower() == 'test')
+    
+    def get_db_url(self) -> str:
+        if(self.is_test()):
+            return "sqlite:///:memory:"
+        return self.db_url
 
     def get_open_api_path(self) -> str:
         if(self.is_development()):
