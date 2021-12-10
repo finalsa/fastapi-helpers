@@ -24,8 +24,11 @@ class DefaultLogger(logging.Logger):
     def __init__(self, name, settings):
         super().__init__(f"{name}")
         if(settings.is_production()):
-            handler = watchtower.CloudWatchLogHandler(log_group=settings.app_name, use_queues = False)
+            color_formatter = ColoredFormatter(self.COLOR_FORMAT)
+            handler = watchtower.CloudWatchLogHandler(log_group=settings.app_name, use_queues = False, )
+            handler.setFormatter(color_formatter)
             self.addHandler(handler)
+
         else:
             color_formatter = ColoredFormatter(self.COLOR_FORMAT)
             console = logging.StreamHandler()

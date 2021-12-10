@@ -60,12 +60,13 @@ setup(
     python_requires=">=3.7",
     data_files=[("", ["LICENSE.md"])],
     install_requires=[
-        "argon2-cffi>=21.0.0",
+        "aiosqlite>=0.17.0",
+        "argon2-cffi>=21.1.0",
         "ormar>=0.10.20",
         'pydantic>=1.8.2',
-        "fastapi>=0.68.1,<=0.70.0",
+        "fastapi>=0.70.0",
         "typing_extensions>=3.7,<3.10.0.3",
-        "watchtower>=1.0.6",
+        "watchtower>=2.0.1",
         "boto3>=1.20.3"
     ],
     extras_require={
