@@ -9,7 +9,7 @@ BOLD_SEQ = "\033[1m"
 
 
 def formatter_message(message):
-    m =  message.replace(
+    m = message.replace(
         "$RESET", RESET_SEQ
     ).replace("$BOLD", BOLD_SEQ)
     return m
@@ -28,23 +28,27 @@ class DefaultLogger(logging.Logger):
         log_format=None,
     ):
         super().__init__(f"{name}")
+        self.addHandler(self.get_handler(settings, log_format))
+
+    @classmethod
+    def get_handler_logger(cls, settings: DefaultSettings = None, log_format=None):
         if(settings is not None and settings.is_production()):
             if(log_format is None):
-                log_format = self.NONE_FORMAT
+                log_format = cls.NONE_FORMAT
             color_formatter = ColoredFormatter(
-                log_format, 
+                log_format,
                 use_color=False
             )
             handler = watchtower.CloudWatchLogHandler(
-                log_group=settings.app_name, 
+                log_group=settings.app_name,
                 use_queues=True,
             )
             handler.setFormatter(color_formatter)
-            self.addHandler(handler)
+            return handler
         else:
             if(log_format is None):
-                log_format = self.COLOR_FORMAT
+                log_format = cls.COLOR_FORMAT
             color_formatter = ColoredFormatter(log_format)
             console = logging.StreamHandler()
             console.setFormatter(color_formatter)
-            self.addHandler(console)
+            return console
