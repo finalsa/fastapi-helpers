@@ -28,7 +28,7 @@ class DefaultLogger(logging.Logger):
         log_format=None,
     ):
         super().__init__(f"{name}")
-        self.addHandler(self.get_handler(settings, log_format))
+        self.addHandler(self.get_handler_logger(settings, log_format))
 
     @classmethod
     def get_handler_logger(cls, settings: DefaultSettings = None, log_format=None):
