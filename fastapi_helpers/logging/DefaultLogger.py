@@ -41,7 +41,7 @@ class DefaultLogger(logging.Logger):
             )
             handler = watchtower.CloudWatchLogHandler(
                 log_group=settings.app_name,
-                use_queues=True,
+                use_queues=False,
             )
             handler.setFormatter(color_formatter)
             return handler
