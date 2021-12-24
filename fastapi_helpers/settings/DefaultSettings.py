@@ -16,10 +16,10 @@ class DefaultSettings(BaseSettings):
 
     def is_production(self,):
         return (self.env.lower() == 'prod')
-    
+
     def is_test(self,):
         return (self.env.lower() == 'test')
-    
+
     def get_db_url(self) -> str:
         if(self.is_test()):
             return "sqlite:///:memory:"

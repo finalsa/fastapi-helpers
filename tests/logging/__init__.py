@@ -1,2 +1,0 @@
-from fastapiutils import DefaultLogger
-

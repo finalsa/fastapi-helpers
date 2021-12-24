@@ -1,13 +1,9 @@
 from typing import Dict
+from fastapi.exceptions import HTTPException
 from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi import Response, status, Request
 from fastapi_helpers.logging import DefaultLogger
 from time import time
-
-try:
-    from orjson import dumps
-except ImportError:
-    from json import dumps
 
 class HeadersMiddleware(BaseHTTPMiddleware):
 
@@ -26,10 +22,14 @@ class HeadersMiddleware(BaseHTTPMiddleware):
         try:
             response = await call_next(request)
         except Exception as ex:
+            if(isinstance(ex, HTTPException)):
+                return ex
+            self.logger.error("Exception: %s", ex)
             self.logger.exception(ex)
             response = Response(
-                dumps({"status": "An error has ocurred",  "error": str(ex)}),
-                status.HTTP_500_INTERNAL_SERVER_ERROR, {}
+                {"status": "An error has ocurred"},
+                status.HTTP_500_INTERNAL_SERVER_ERROR, 
+                {}
             )
         for header in self.headers:
             response.headers[header] = self.headers[header]

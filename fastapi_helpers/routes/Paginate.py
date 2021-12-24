@@ -1,9 +1,9 @@
 import ormar as orm
 import math
-from typing import List, Optional
+from typing import Any, List, Optional
 
 
-async def load_data_callback(result:List[orm.Model]=[]):
+async def load_data_callback(result: List[orm.Model] = []):
     for r in result:
         await r.load_data()
     return result
@@ -13,14 +13,14 @@ class Pagination():
 
     def __init__(
         self,
-        pagination: Optional[bool] = False,
+        paginate: Optional[bool] = False,
         search: Optional[str] = '',
         objects_per_page: Optional[int] = 5,
         page: Optional[int] = 0,
         limit: Optional[int] = 5,
         order_by: Optional[str] = '-id',
     ):
-        self.pagination = pagination
+        self.paginate = paginate
         self.objects_per_page = objects_per_page
         self.page = page
         self.limit = limit
@@ -46,13 +46,21 @@ class Pagination():
 
     def __str__(self) -> str:
         return "pagination:{}, objects_per_page:{}, page:{}, limit:{}, order_by:{}, filters:{}".format(
-            self.pagination,
+            self.paginate,
             self.objects_per_page,
             self.page,
             self.limit,
             self.order_by,
             self.filters
         )
+
+
+class PaginationResult():
+    items_per_page: int
+    total_objects: int
+    total_pages: int
+    actual_page: int
+    data: List[Any]
 
 
 async def paginate_object(
@@ -92,7 +100,7 @@ async def paginate_object(
     if(callback is not None and len(callback) > 1):
         callback[1]['result'] = result
         result = await callback[0](** callback[1])
-    if(options.pagination):
+    if(options.paginate):
         total_objects = await query.count()
         total_pages = math.floor(total_objects / options.objects_per_page)
         if(total_objects % options.objects_per_page) > 0:

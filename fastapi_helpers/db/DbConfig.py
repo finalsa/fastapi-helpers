@@ -4,6 +4,7 @@ from sqlalchemy.engine import Engine
 from contextlib import closing
 from fastapi_helpers.logging import DefaultLogger
 from ..settings import DefaultSettings
+from logging import Logger
 
 class DbConfig():
 
@@ -13,11 +14,18 @@ class DbConfig():
     database: Database
     logger: DefaultLogger
 
-    def __init__(self, settings: DefaultSettings, logger: DefaultLogger) -> None:
+    def __init__(
+        self, 
+        settings: DefaultSettings, 
+        logger: DefaultLogger = None
+    ) -> None:
         self.db_url = settings.get_db_url()
         self.metadata = MetaData()
         self.database = Database(self.db_url)
-        self.logger = logger
+        if(logger is not None):
+            self.logger = logger
+        else:
+            self.logger = Logger("db_connection")
 
     async def connect_db(self, poolclass=None):
         if(self.database.is_connected):
@@ -36,7 +44,6 @@ class DbConfig():
                 con.execute(table.delete())
             trans.commit()
         self.logger.info("DB reseted")
-
 
     async def disconnect_db(self,):
         await self.database.disconnect()

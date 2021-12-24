@@ -13,7 +13,8 @@ class ColoredFormatter(logging.Formatter):
         'INFO': GREEN,
         'DEBUG': BLUE,
         'CRITICAL': RED,
-        'ERROR': RED
+        'ERROR': RED,
+        'EXCEPTION': RED
     }
 
     def __init__(self, msg, use_color=True):

@@ -12,7 +12,7 @@ from fastapi_helpers.security import Encoder
 from fastapi_helpers.settings import DefaultSettings
 from fastapi_helpers.db import DbConfig
 
-__version__ = "0.0.9"
+__version__ = "0.0.10"
 
 __all__ = [
     "Worker",
