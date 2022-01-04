@@ -22,8 +22,6 @@ class HeadersMiddleware(BaseHTTPMiddleware):
         try:
             response = await call_next(request)
         except Exception as ex:
-            if(isinstance(ex, HTTPException)):
-                return ex
             self.logger.error("Exception: %s", ex)
             self.logger.exception(ex)
             response = Response(
