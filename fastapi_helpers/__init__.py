@@ -13,7 +13,7 @@ from fastapi_helpers.settings import DefaultSettings
 from fastapi_helpers.db import DbConfig
 from fastapi_helpers.db.seeders import DbSeeder
 
-__version__ = "0.0.17"
+__version__ = "0.0.18"
 
 __all__ = [
     "Worker",

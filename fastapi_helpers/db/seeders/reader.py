@@ -24,7 +24,7 @@ class DbSeeder():
             fil_content = "".join(fil.readlines())
             fil.close()
             objects = loads(fil_content)
-            crud_obj: BaseCrud = eval(f"self.crud.{cls['crud']}.crud")
+            crud_obj: BaseCrud = eval(f"self.crud.{cls['crud']}")
             for obj in objects:
                 await crud_obj.create(obj)
         return True

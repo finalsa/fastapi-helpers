@@ -34,6 +34,8 @@ class Pagination:
     def set_filters(self, **filters) -> None:
         if("pagination" in filters):
             filters.pop("pagination")
+        if("paginate" in filters):
+            filters.pop("paginate")
         if("objects_per_page" in filters):
             filters.pop("objects_per_page")
         if("page" in filters):
