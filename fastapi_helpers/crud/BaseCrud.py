@@ -50,8 +50,7 @@ class BaseCrud():
 
     async def get_or_create(self, model_in: Optional[Union[Dict, Model]]) -> Optional[Model]:
         params = to_dict(model_in)
-        obj = self.model(**params)
-        obj = await obj.get_or_create()
+        obj = await self.model.objects.get_or_create(**params)
         return obj
 
     async def create(self, model_in: Optional[Union[Dict, Model]]) -> Optional[Model]:
