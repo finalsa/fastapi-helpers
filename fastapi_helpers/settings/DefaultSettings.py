@@ -11,13 +11,13 @@ class DefaultSettings(BaseSettings):
     port: Optional[str] = "80"
     version: Optional[str] = '1.0.0.0'
 
-    def is_development(self,):
+    def is_development(self,) -> bool:
         return (self.env.lower() == 'dev')
 
-    def is_production(self,):
+    def is_production(self,) -> bool:
         return (self.env.lower() == 'prod')
 
-    def is_test(self,):
+    def is_test(self,) -> bool:
         return (self.env.lower() == 'test')
 
     def get_db_url(self) -> str:

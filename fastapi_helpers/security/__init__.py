@@ -7,7 +7,7 @@ class Encoder:
     ph = argon2.PasswordHasher(time_cost=3)
 
     @staticmethod
-    def encode(word):
+    def encode(word: str) -> str:
         base64_message = word
         base64_bytes = base64_message.encode('ascii')
         message_bytes = base64.b64encode(base64_bytes)
@@ -19,7 +19,7 @@ class Encoder:
         return encode
 
     @staticmethod
-    def decode(word):
+    def decode(word: str) -> str:
         base64_message = word
         base64_bytes = base64_message.encode('ascii')
         message_bytes = base64.b64decode(base64_bytes)

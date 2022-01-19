@@ -7,11 +7,6 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 from fastapi_helpers.logging import DefaultLogger
 
 
-class TestException(Exception):
-
-    def __init__(self):
-        self.message = "Test Exception"
-
 class TestLogging(TestCase):
 
     def test_logging(self):
@@ -20,7 +15,7 @@ class TestLogging(TestCase):
         logger.debug("debug")
         logger.error("error")
         try:
-            raise TestException()
+            raise Exception("Test Exception")
         except Exception as ex:
             logger.exception(ex)
         logger.warning("warning")

@@ -1,5 +1,4 @@
-from typing import Dict
-from fastapi.exceptions import HTTPException
+from typing import Dict, Any
 from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi import Response, status, Request
 from fastapi_helpers.logging import DefaultLogger
@@ -16,7 +15,7 @@ class HeadersMiddleware(BaseHTTPMiddleware):
             self.headers = headers
         self.logger = logger
 
-    async def dispatch(self, request:Request, call_next):
+    async def dispatch(self, request:Request, call_next) -> Any:
         start_time = time()
         response = None
         try:

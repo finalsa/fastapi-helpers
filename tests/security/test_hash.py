@@ -11,5 +11,4 @@ class SecurityTest(TestCase):
     
     def test_pass_hash(self,):
         _hash = Encoder.ph.hash("hola")
-
         self.assertTrue(Encoder.ph.verify(_hash, "hola"))

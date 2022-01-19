@@ -1,5 +1,8 @@
-from typing import Any, Dict
-from fastapi import APIRouter, Request, Depends, HTTPException, Response, status
+from typing import Dict, Optional, Union
+from fastapi import (
+    APIRouter, Request, Depends, 
+    HTTPException, Response, status
+)
 from ormar import Model
 from fastapi_helpers.crud import BaseCrud
 from .Paginate import Pagination
@@ -42,7 +45,7 @@ class DefaultModelRouter():
         self,
         *,
         id: int,
-    ):
+    ) -> Optional[Union[Model, Dict]]:
         m = await self.crud.get(id=id)
         if(m is None):
             raise HTTPException(404, {
@@ -54,7 +57,7 @@ class DefaultModelRouter():
         self,
         *,
         model_in: Dict,
-    ) -> Any:
+    ) -> Optional[Model]:
         m = await self.crud.create(
             model_in
         )
@@ -65,7 +68,7 @@ class DefaultModelRouter():
         *,
         id: int,
         model_in:  Dict,
-    ):
+    ) -> Optional[Model]:
         m = await self.crud.update(
             id,
             model_in
@@ -82,15 +85,16 @@ class DefaultModelRouter():
         self,
         *,
         id: int,
-    ):
+    ) -> Response:
         m = await self.crud.delete(
             id=id,
         )
         if(m is None):
-            raise HTTPException(
-                404, {
+            return Response(
+                {
                     "status": "not found"
-                }, 
+                },
+                status.HTTP_404_NOT_FOUND,
                 self.headers
             )
         return Response(

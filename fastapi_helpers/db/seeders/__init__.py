@@ -1,1 +1,1 @@
-from .reader import read_index
+from .reader import DbSeeder

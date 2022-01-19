@@ -1,15 +1,17 @@
 import ormar as orm
 import math
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Dict, Tuple, Union
 
 
-async def load_data_callback(result: List[orm.Model] = []):
+async def load_data_callback(
+    result: List[orm.Model] = []
+)-> List[orm.Model]:
     for r in result:
         await r.load_data()
     return result
 
 
-class Pagination():
+class Pagination:
 
     def __init__(
         self,
@@ -29,7 +31,7 @@ class Pagination():
         self.filters = {}
         self.orable = {}
 
-    def set_filters(self, **filters):
+    def set_filters(self, **filters) -> None:
         if("pagination" in filters):
             filters.pop("pagination")
         if("objects_per_page" in filters):
@@ -66,8 +68,8 @@ class PaginationResult():
 async def paginate_object(
     model: orm.Model,
     options: Pagination = Pagination(),
-    callback=None,
-):
+    callback: Tuple = None
+) -> Optional[Union[Dict, List]]:
 
     if hasattr(model, 'objects'):
         model = model.objects

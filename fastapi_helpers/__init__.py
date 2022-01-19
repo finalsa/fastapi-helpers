@@ -11,6 +11,7 @@ from fastapi_helpers.crud import BaseCrud, to_dict
 from fastapi_helpers.security import Encoder
 from fastapi_helpers.settings import DefaultSettings
 from fastapi_helpers.db import DbConfig
+from fastapi_helpers.db.seeders import DbSeeder
 
 __version__ = "0.0.14"
 
@@ -18,6 +19,7 @@ __all__ = [
     "Worker",
     "DefaultLogger",
     "DbConfig",
+    "DbSeeder",
     "HeadersMiddleware",
     "DefaultModelRouter",
     "load_data_callback",

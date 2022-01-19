@@ -1,6 +1,7 @@
 from databases import Database
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.engine import Engine
+from sqlalchemy.pool import QueuePool, Pool
 from contextlib import closing
 from fastapi_helpers.logging import DefaultLogger
 from ..settings import DefaultSettings
@@ -27,7 +28,10 @@ class DbConfig():
         else:
             self.logger = Logger("db_connection")
 
-    async def connect_db(self, poolclass=None):
+    async def connect_db(
+        self, 
+        poolclass:Pool = QueuePool
+    ) -> None:
         if(self.database.is_connected):
             return
         self.engine = create_engine(
@@ -37,7 +41,7 @@ class DbConfig():
         await self.database.connect()
         self.logger.info("DB connected")
 
-    async def reset_db(self, ):
+    async def reset_db(self, ) -> None:
         with closing(self.engine.connect()) as con:
             trans = con.begin()
             for table in reversed(self.metadata.sorted_tables):
@@ -45,6 +49,6 @@ class DbConfig():
             trans.commit()
         self.logger.info("DB reseted")
 
-    async def disconnect_db(self,):
+    async def disconnect_db(self,) ->  None:
         await self.database.disconnect()
         self.logger.info("DB disconnected")

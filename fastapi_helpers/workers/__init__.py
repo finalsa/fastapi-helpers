@@ -2,7 +2,7 @@ from types import MethodWrapperType
 from sqlalchemy.pool import NullPool
 from fastapi_helpers.db import DbConfig
 from fastapi_helpers.logging import DefaultLogger
-
+from typing import Any
 
 class Worker:
 
@@ -19,8 +19,7 @@ class Worker:
 
     def use_db_connection(self, func) -> MethodWrapperType:
         '''Decorator that connects to the db.'''
-
-        async def wrap(*args, **kwargs):
+        async def wrap(*args, **kwargs) -> Any:
             await self.db_config.connect_db(NullPool)
             result = None
             try:
