@@ -3,6 +3,9 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi import Response, status, Request
 from fastapi_helpers.logging import DefaultLogger
 from time import time
+from json import dumps
+
+
 
 class HeadersMiddleware(BaseHTTPMiddleware):
 
@@ -24,7 +27,7 @@ class HeadersMiddleware(BaseHTTPMiddleware):
             self.logger.error("Exception: %s", ex)
             self.logger.exception(ex)
             response = Response(
-                {"status": "An error has ocurred"},
+                dumps({"status": "An error has ocurred"}),
                 status.HTTP_500_INTERNAL_SERVER_ERROR, 
                 {}
             )
