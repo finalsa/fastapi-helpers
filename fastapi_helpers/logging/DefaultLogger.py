@@ -16,9 +16,9 @@ def formatter_message(message):
 
 class DefaultLogger(logging.Logger):
 
-    FORMAT = "%(levelname)s%(message)s \t(%(pathname)s Line:%(lineno)d$RESET)"
+    FORMAT = "%(levelname)s: %(message)s \t(%(pathname)s Line:%(lineno)d$RESET)"
     COLOR_FORMAT = formatter_message(FORMAT)
-    NONE_FORMAT = "%(levelname)s%(message)s \t(%(pathname)s:%(lineno)d)"
+    NONE_FORMAT = "%(levelname)s: %(message)s \t(%(pathname)s:%(lineno)d)"
 
     def __init__(
         self,
