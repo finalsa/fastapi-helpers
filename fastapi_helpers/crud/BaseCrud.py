@@ -76,7 +76,7 @@ class BaseCrud():
         if(obj is None):
             return None
         await obj.delete()
-        return {'state': 'ok'}
+        return obj
 
 
 def to_dict(model_in):

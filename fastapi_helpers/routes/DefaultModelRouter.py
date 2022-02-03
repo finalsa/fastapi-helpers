@@ -1,5 +1,4 @@
 from typing import Dict, Optional, Union
-from xml.dom import NOT_FOUND_ERR
 from fastapi import (
     APIRouter, Request, Depends, 
     HTTPException, Response, status
@@ -7,7 +6,7 @@ from fastapi import (
 from ormar import Model
 from fastapi_helpers.crud import BaseCrud
 from .Paginate import Pagination
-
+from orjson import dumps
 
 
 
@@ -18,7 +17,7 @@ class DefaultModelRouter():
     model: Model
     headers: Dict
     NOT_FOUND_ERR = {
-                "status": "not found"
+        "status": "not found"
     }
 
     def __init__(
@@ -29,12 +28,13 @@ class DefaultModelRouter():
     ) -> None:
         self.model = model
         self.crud = crud
+        id_label = "/{id}/"
         self.router = APIRouter()
         self.router.add_api_route("/", self.read_list, methods=["GET"])
-        self.router.add_api_route("/{id}/", self.read, methods=["GET"])
+        self.router.add_api_route(id_label, self.read, methods=["GET"])
         self.router.add_api_route("/", self.create, methods=["POST"])
-        self.router.add_api_route("/{id}/", self.update, methods=["PUT"])
-        self.router.add_api_route("/{id}/", self.delete, methods=["DELETE"])
+        self.router.add_api_route(id_label, self.update, methods=["PUT"])
+        self.router.add_api_route(id_label, self.delete, methods=["DELETE"])
         self.headers = headers
 
     async def read_list(
@@ -56,8 +56,8 @@ class DefaultModelRouter():
         if(m is None):
             raise HTTPException(404, self.NOT_FOUND_ERR, self.headers)
         if(isinstance(m, Model)):
-            return Response(m.dict(), status.HTTP_200_OK, self.headers)
-        return Response(m, status.HTTP_200_OK, self.headers)
+            return Response(dumps(m.dict()), status.HTTP_200_OK, self.headers)
+        return Response(dumps(m), status.HTTP_200_OK, self.headers)
 
     async def create(
         self,
@@ -68,8 +68,8 @@ class DefaultModelRouter():
             model_in
         )
         if(isinstance(m, Model)):
-            return Response(m.dict(), status.HTTP_201_CREATED, self.headers)
-        return Response(m, status.HTTP_201_CREATED, self.headers,)
+            return Response(dumps(m.dict()), status.HTTP_201_CREATED, self.headers)
+        return Response(dumps(m), status.HTTP_201_CREATED, self.headers,)
 
     async def update(
         self,
@@ -84,9 +84,9 @@ class DefaultModelRouter():
         if(m is None):
             raise HTTPException(404, self.NOT_FOUND_ERR, self.headers)
         if(isinstance(m, Model)):
-            return Response(m.dict(), status.HTTP_201_CREATED, self.headers)
+            return Response(dumps(m.dict()), status.HTTP_202_ACCEPTED, self.headers)
         return Response(
-            m, status.HTTP_201_CREATED, self.headers
+            dumps(m), status.HTTP_202_ACCEPTED, self.headers
         )
 
     async def delete(
@@ -98,15 +98,9 @@ class DefaultModelRouter():
             id=id,
         )
         if(m is None):
-            return Response(
-                {
-                    "status": "not found"
-                },
-                status.HTTP_404_NOT_FOUND,
-                self.headers
-            )
+            raise HTTPException(404, self.NOT_FOUND_ERR, self.headers)
         if(isinstance(m, Model)):
-            return Response(m.dict(), status.HTTP_202_ACCEPTED, self.headers)
+            return Response(dumps(m.dict()), status.HTTP_202_ACCEPTED, self.headers)
         return Response(
-            m, status.HTTP_202_ACCEPTED, self.headers
+            dumps(m), status.HTTP_202_ACCEPTED, self.headers
         )

@@ -7,9 +7,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 from fastapi_helpers.logging import DefaultLogger
 
 
-class TestLogging(TestCase):
 
-    def test_logging(self):
+   
+def test_logging():
         logger = DefaultLogger("logger")
         logger.info("information")
         logger.debug("debug")

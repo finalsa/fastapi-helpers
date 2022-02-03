@@ -2,13 +2,14 @@ from unittest import TestCase
 from fastapi_helpers import Encoder
 
 
-class SecurityTest(TestCase):
 
-    def test_hash(self,):
-        encoded = Encoder.encode("hola")
-        decoded = Encoder.decode(encoded)
-        self.assertEqual("hola", decoded, "Encoder base64 failed.")
+
+
+def test_hash():
+    encoded = Encoder.encode("hola")
+    decoded = Encoder.decode(encoded)
+    assert "hola" == decoded
     
-    def test_pass_hash(self,):
-        _hash = Encoder.ph.hash("hola")
-        self.assertTrue(Encoder.ph.verify(_hash, "hola"))
+def test_pass_hash():
+    _hash = Encoder.ph.hash("hola")
+    assert Encoder.ph.verify(_hash, "hola")
