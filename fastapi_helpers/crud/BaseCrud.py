@@ -35,7 +35,7 @@ class BaseCrud():
             (self.load_data, {})
         )
 
-    async def get(self, id: Optional[Union[int, str]]) -> Any:
+    async def get(self, id: Optional[Union[int, str]]) -> Union[Optional[Model] , Dict]:
         options = Pagination()
         options.limit = 1
         options.filters = {'id': id}

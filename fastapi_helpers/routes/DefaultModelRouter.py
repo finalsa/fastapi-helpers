@@ -1,4 +1,5 @@
 from typing import Dict, Optional, Union
+from xml.dom import NOT_FOUND_ERR
 from fastapi import (
     APIRouter, Request, Depends, 
     HTTPException, Response, status
@@ -8,12 +9,17 @@ from fastapi_helpers.crud import BaseCrud
 from .Paginate import Pagination
 
 
+
+
 class DefaultModelRouter():
 
     router: APIRouter
     crud: BaseCrud
     model: Model
     headers: Dict
+    NOT_FOUND_ERR = {
+                "status": "not found"
+    }
 
     def __init__(
         self,
@@ -48,10 +54,10 @@ class DefaultModelRouter():
     ) -> Optional[Union[Model, Dict]]:
         m = await self.crud.get(id=id)
         if(m is None):
-            raise HTTPException(404, {
-                "status": "not found"
-            }, self.headers)
-        return Response(m, status.HTTP_200_OK, self.headers, "")
+            raise HTTPException(404, self.NOT_FOUND_ERR, self.headers)
+        if(isinstance(m, Model)):
+            return Response(m.dict(), status.HTTP_200_OK, self.headers)
+        return Response(m, status.HTTP_200_OK, self.headers)
 
     async def create(
         self,
@@ -61,7 +67,9 @@ class DefaultModelRouter():
         m = await self.crud.create(
             model_in
         )
-        return Response(m, status.HTTP_201_CREATED, self.headers, )
+        if(isinstance(m, Model)):
+            return Response(m.dict(), status.HTTP_201_CREATED, self.headers)
+        return Response(m, status.HTTP_201_CREATED, self.headers,)
 
     async def update(
         self,
@@ -74,9 +82,9 @@ class DefaultModelRouter():
             model_in
         )
         if(m is None):
-            raise HTTPException(404, {
-                "status": "not found"
-            }, self.headers)
+            raise HTTPException(404, self.NOT_FOUND_ERR, self.headers)
+        if(isinstance(m, Model)):
+            return Response(m.dict(), status.HTTP_201_CREATED, self.headers)
         return Response(
             m, status.HTTP_201_CREATED, self.headers
         )
@@ -97,6 +105,8 @@ class DefaultModelRouter():
                 status.HTTP_404_NOT_FOUND,
                 self.headers
             )
+        if(isinstance(m, Model)):
+            return Response(m.dict(), status.HTTP_202_ACCEPTED, self.headers)
         return Response(
             m, status.HTTP_202_ACCEPTED, self.headers
         )
