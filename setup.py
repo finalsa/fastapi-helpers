@@ -66,7 +66,7 @@ setup(
         'pydantic>=1.8.2',
         "fastapi>=0.70.0",
         "typing_extensions>=3.7,<3.10.0.3",
-        "watchtower>=2.0.1",
+        "watchtower>=3.0.0",
         "boto3>=1.20.3"
     ],
     extras_require={

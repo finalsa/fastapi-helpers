@@ -2,6 +2,8 @@ from .ColoredFormater import ColoredFormatter
 import watchtower
 import logging
 from ..settings.DefaultSettings import DefaultSettings
+from .AwsLogFormatter import AwsLogFormatter
+from typing import List
 
 RESET_SEQ = "\033[0m"
 COLOR_SEQ = "\033[1;%dm"
@@ -18,8 +20,8 @@ class DefaultLogger(logging.Logger):
 
     FORMAT = "%(levelname)s: %(message)s \t(%(pathname)s Line:%(lineno)d$RESET)"
     COLOR_FORMAT = formatter_message(FORMAT)
-    NONE_FORMAT = "%(levelname)s: %(message)s \t(%(pathname)s:%(lineno)d)"
-
+    NONE_FORMAT = "%(levelname)s: %(message)s"
+    
     def __init__(
         self,
         name,
@@ -33,22 +35,24 @@ class DefaultLogger(logging.Logger):
     def get_handler_logger(
             cls, 
             settings: DefaultSettings = None, 
-            log_format=None,
-            use_queues = False,
+            log_format:str=None,
+            use_queues:bool = True,
+            log_record_attrs: List[str]=[
+                "pathname", 
+                "lineno"
+            ]
         ) -> logging.Handler:
         handler = None
         if(settings is not None and settings.is_production()):
             if(log_format is None):
                 log_format = cls.NONE_FORMAT
-            color_formatter = ColoredFormatter(
-                log_format,
-                use_color=False
-            )
             handler = watchtower.CloudWatchLogHandler(
-                log_group=settings.app_name,
+                log_group_name=settings.app_name,
                 use_queues=use_queues,
             )
-            handler.setFormatter(color_formatter)
+            aws_formatter = AwsLogFormatter(log_format)
+            handler.setFormatter(aws_formatter)
+            handler.formatter.add_log_record_attrs=log_record_attrs
         else:
             if(log_format is None):
                 log_format = cls.COLOR_FORMAT

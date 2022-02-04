@@ -32,4 +32,4 @@ starlette==0.17.1
 toml==0.10.2
 typing-extensions==3.10.0.2
 urllib3==1.26.6
-watchtower==2.1.1
+watchtower==3.0.0

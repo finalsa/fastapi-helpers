@@ -1,6 +1,10 @@
 from fastapi_helpers.workers import Worker
 from fastapi_helpers.logging import DefaultLogger
-from fastapi_helpers.middlewares import HeadersMiddleware
+from fastapi_helpers.middlewares import(
+    get_real_ip,
+    get_real_ip_from_headers,
+    HeadersMiddleware,
+)
 from fastapi_helpers.routes import (
     DefaultModelRouter,
     load_data_callback,
@@ -13,13 +17,15 @@ from fastapi_helpers.settings import DefaultSettings
 from fastapi_helpers.db import DbConfig
 from fastapi_helpers.db.seeders import DbSeeder
 
-__version__ = "0.0.20"
+__version__ = "0.0.21"
 
 __all__ = [
     "Worker",
     "DefaultLogger",
     "DbConfig",
     "DbSeeder",
+    "get_real_ip",
+    "get_real_ip_from_headers",
     "HeadersMiddleware",
     "DefaultModelRouter",
     "load_data_callback",

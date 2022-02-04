@@ -2,9 +2,9 @@ from typing import Dict, Any
 from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi import Response, status, Request
 from fastapi_helpers.logging import DefaultLogger
+from .get_real_ip import get_real_ip
 from time import time
 from json import dumps
-
 
 
 class HeadersMiddleware(BaseHTTPMiddleware):
