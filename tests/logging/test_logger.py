@@ -11,7 +11,7 @@ DefaultSettings)
 
 
 settings = DefaultSettings()
-settings.env = "prod"
+settings.env = "test"
 logger = DefaultLogger("logger", settings=settings)
 from fastapi_helpers.logging import DefaultLogger
 
