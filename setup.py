@@ -65,6 +65,7 @@ setup(
         "ormar>=0.10.24",
         'pydantic>=1.8.2',
         "fastapi>=0.70.0",
+        "fastapi-better-logger>=0.0.2",
         "typing_extensions>=3.7,<3.10.0.3",
         "watchtower>=3.0.0",
         "boto3>=1.20.3"
@@ -77,5 +78,14 @@ setup(
         "crypto": ["cryptography"],
     },
     classifiers=[
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: BSD License",
+        "Operating System :: OS Independent",
+        "Topic :: Internet :: WWW/HTTP",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
     ],
 )

@@ -1,22 +1,24 @@
 import sys 
 import os
-
+import logging
+import logging.config
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
 
-from fastapi_helpers import (DefaultLogger, 
-DefaultSettings)
+from fastapi_helpers import (DefaultSettings, get_logger_default_config)
 
 
 settings = DefaultSettings()
 settings.env = "test"
-logger = DefaultLogger("logger", settings=settings)
-from fastapi_helpers.logging import DefaultLogger
+
 
 app = FastAPI()
 
+logging.config.dictConfig(get_logger_default_config(settings))
+logger = logging.getLogger("fastapi.access")
 
 @app.get("/")
 async def root():

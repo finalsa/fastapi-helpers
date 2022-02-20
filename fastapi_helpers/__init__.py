@@ -1,5 +1,10 @@
 from fastapi_helpers.workers import Worker
-from fastapi_helpers.logging import DefaultLogger
+from fastapi_helpers.logging import (
+    get_logger_default_config,
+    get_machine_name,
+    get_stream_name,
+    get_logger_prod_config,
+)
 from fastapi_helpers.middlewares import(
     get_real_ip,
     get_real_ip_from_headers,
@@ -17,11 +22,14 @@ from fastapi_helpers.settings import DefaultSettings
 from fastapi_helpers.db import DbConfig
 from fastapi_helpers.db.seeders import DbSeeder
 
-__version__ = "0.0.21"
+__version__ = "0.1.0"
 
 __all__ = [
+    "get_logger_default_config",
+    "get_machine_name",
+    "get_stream_name",
+    "get_logger_prod_config",
     "Worker",
-    "DefaultLogger",
     "DbConfig",
     "DbSeeder",
     "get_real_ip",

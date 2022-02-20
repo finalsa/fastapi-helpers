@@ -1,62 +1,46 @@
-from .ColoredFormater import ColoredFormatter
-import watchtower
-import logging
-from ..settings.DefaultSettings import DefaultSettings
-from .AwsLogFormatter import AwsLogFormatter
-from typing import List
+from copy import copy
+from typing import Dict
+from fastapi_better_logger import (AWS_DEFAULT_CONFIG, DEFAULT_CONFIG)
+from fastapi_helpers.settings import DefaultSettings
+from datetime import datetime
+import sys
+import os
+import threading
+import platform
+import functools
 
-RESET_SEQ = "\033[0m"
-COLOR_SEQ = "\033[1;%dm"
+TEST_CONFIGURATION = copy(DEFAULT_CONFIG)
+DEV_CONFIGURATION = copy(DEFAULT_CONFIG)
+DEFAULT_LOG_STREAM_NAME = "{machine_name}/{program_name}/{logger_name}/{process_id}"
 
+@functools.lru_cache(maxsize=0)
+def get_machine_name():
+    return platform.node()
 
-def formatter_message(message):
-    m = message.replace(
-        "$RESET", RESET_SEQ
+def get_stream_name(logger_name):
+    return DEFAULT_LOG_STREAM_NAME.format(
+        machine_name=get_machine_name(),
+        program_name=sys.argv[0],
+        process_id=os.getpid(),
+        thread_name=threading.current_thread().name,
+        logger_name=logger_name,
+        strftime=datetime.utcnow()
     )
-    return m
+
+def get_logger_prod_config(settings: DefaultSettings) -> Dict:
+    settings.env = "prod"
+    PROD_CONFIGURATION = copy(AWS_DEFAULT_CONFIG)
+    PROD_CONFIGURATION["handlers"]["default"]["log_group_name"] = settings.app_name
+    PROD_CONFIGURATION["handlers"]["default"]["log_stream_name"] = get_stream_name(settings.app_name)
+    PROD_CONFIGURATION["handlers"]["access"]["log_group_name"] = settings.app_name
+    PROD_CONFIGURATION["handlers"]["access"]["log_stream_name"] = get_stream_name(settings.app_name)
+    return PROD_CONFIGURATION
 
 
-class DefaultLogger(logging.Logger):
 
-    FORMAT = "%(levelname)s: %(message)s \t(%(pathname)s Line:%(lineno)d$RESET)"
-    COLOR_FORMAT = formatter_message(FORMAT)
-    NONE_FORMAT = "%(levelname)s: %(message)s"
-    
-    def __init__(
-        self,
-        name,
-        settings: DefaultSettings = None,
-        log_format=None,
-    ):
-        super().__init__(f"{name}")
-        self.addHandler(self.get_handler_logger(settings, log_format))
-
-    @classmethod
-    def get_handler_logger(
-            cls, 
-            settings: DefaultSettings = None, 
-            log_format:str=None,
-            use_queues:bool = True,
-            log_record_attrs: List[str]=[
-                "pathname", 
-                "lineno"
-            ]
-        ) -> logging.Handler:
-        handler = None
-        if(settings is not None and settings.is_production()):
-            if(log_format is None):
-                log_format = cls.NONE_FORMAT
-            handler = watchtower.CloudWatchLogHandler(
-                log_group_name=settings.app_name,
-                use_queues=use_queues,
-            )
-            aws_formatter = AwsLogFormatter(log_format)
-            handler.setFormatter(aws_formatter)
-            handler.formatter.add_log_record_attrs=log_record_attrs
-        else:
-            if(log_format is None):
-                log_format = cls.COLOR_FORMAT
-            color_formatter = ColoredFormatter(log_format)
-            handler = logging.StreamHandler()
-            handler.setFormatter(color_formatter)
-        return handler
+def get_logger_default_config(settings: DefaultSettings):
+    if settings.is_production():
+        return get_logger_prod_config(settings)
+    elif settings.is_test():
+        return TEST_CONFIGURATION
+    return DEV_CONFIGURATION
