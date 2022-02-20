@@ -1,5 +1,6 @@
 from typing import Optional
-
+import logging
+import logging.config
 from fastapi.testclient import TestClient
 import sys, os
 
@@ -7,8 +8,14 @@ import pytest_asyncio
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
 
-from fastapi_helpers import (DbConfig, DefaultLogger, 
-DefaultSettings, DefaultModelRouter, BaseCrud, Worker)
+from fastapi_helpers import (
+    DbConfig, 
+    DefaultSettings, 
+    DefaultModelRouter, 
+    BaseCrud, 
+    Worker,
+    get_logger_default_config,
+)
 
 
 import databases
@@ -21,7 +28,8 @@ import ormar
 
 settings = DefaultSettings()
 settings.env = "test"
-logger = DefaultLogger("logger", settings=settings)
+logging.config.dictConfig(get_logger_default_config(settings))
+logger = logging.getLogger("fastapi")
 db_config = DbConfig(settings, logger)
 
 

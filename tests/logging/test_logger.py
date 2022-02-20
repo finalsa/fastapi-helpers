@@ -18,7 +18,7 @@ settings.env = "test"
 app = FastAPI()
 
 logging.config.dictConfig(get_logger_default_config(settings))
-logger = logging.getLogger("fastapi.access")
+logger = logging.getLogger("fastapi")
 
 @app.get("/")
 async def root():
