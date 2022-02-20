@@ -30,10 +30,11 @@ def get_stream_name(logger_name):
 def get_logger_prod_config(settings: DefaultSettings) -> Dict:
     settings.env = "prod"
     PROD_CONFIGURATION = copy(AWS_DEFAULT_CONFIG)
-    PROD_CONFIGURATION["handlers"]["default"]["log_group_name"] = settings.app_name
-    PROD_CONFIGURATION["handlers"]["default"]["log_stream_name"] = get_stream_name(settings.app_name)
-    PROD_CONFIGURATION["handlers"]["access"]["log_group_name"] = settings.app_name
-    PROD_CONFIGURATION["handlers"]["access"]["log_stream_name"] = get_stream_name(settings.app_name)
+    handlers = PROD_CONFIGURATION["handlers"]
+    stream_name = get_stream_name(settings.app_name)
+    for handler in handlers:
+        PROD_CONFIGURATION["handlers"][handler]["stream_name"] = stream_name
+        PROD_CONFIGURATION["handlers"][handler]["log_group_name"] = settings.app_name
     return PROD_CONFIGURATION
 
 
