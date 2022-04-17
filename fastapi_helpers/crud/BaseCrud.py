@@ -6,6 +6,7 @@ from typing import (
     Generic
 )
 
+from uuid import uuid4
 
 T = TypeVar('T', bound=Model)
 
@@ -18,7 +19,13 @@ class BaseCrud(Generic[T]):
         self,
         model: Type[T]
     ) -> None:
+        self.pk_type: Type = model.pk._field.__type__
         self.model = model
+
+    def should_generate_id(self, ):
+        if self.pk_type is str:
+            return True
+        return False
 
     async def load_data(
         self,
@@ -75,7 +82,9 @@ class BaseCrud(Generic[T]):
         model_in: Union[T, Dict]
     ) -> Union[T, Dict]:
         params = to_dict(model_in)
-        obj = await self.model.objects.get_or_create(**params)
+        obj = await self.model.objects.get_or_none(**params)
+        if(obj is None):
+            return await self.create(model_in)
         return obj
 
     async def create(
@@ -84,6 +93,8 @@ class BaseCrud(Generic[T]):
     ) -> Optional[Union[T, Dict]]:
         params = to_dict(model_in)
         obj = self.model(**params)
+        if self.should_generate_id():
+            obj.id = str(uuid4())
         obj = await obj.save()
         return obj
 
@@ -111,7 +122,7 @@ class BaseCrud(Generic[T]):
 
 
 def to_dict(
-    model_in: 
+    model_in:
     Union[T, Dict]
 ) -> Dict:
     params = {}

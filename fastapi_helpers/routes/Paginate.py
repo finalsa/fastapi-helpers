@@ -65,17 +65,17 @@ async def paginate_object(
         offset
     )
     if(options.limit == 0):
-        query.limit(
+        query = query.limit(
             options.objects_per_page
         )
     else:
-        query.limit(
+        query = query.limit(
             options.limit
         )
     result = await query.order_by(
         options.order_by
     ).all()
-    if load_data_action is not None and len(result)  == 2:
+    if load_data_action is not None and len(result) == 2:
         result = await load_data_action[0](result, **load_data_action[1])
     if(options.paginate):
         return await get_paginate_result(result, query, options)

@@ -8,7 +8,7 @@ class PaginateOptions():
         filters: Optional[str] = '',
         objects_per_page: Optional[int] = 5,
         page: Optional[int] = 0,
-        limit: Optional[int] = 5,
+        limit: Optional[int] = 0,
         order_by: Optional[str] = '-id',
     ):
         self.paginate = paginate
