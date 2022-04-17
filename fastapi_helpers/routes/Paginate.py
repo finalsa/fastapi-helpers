@@ -1,121 +1,83 @@
 import ormar as orm
+import pydantic as pd
 import math
-from typing import Any, List, Optional, Dict, Tuple, Union
+from typing import (
+    List, Optional, Union,
+    Callable, TypeVar, Dict,
+    Tuple
+)
+from fastapi_helpers.routes.models import PaginateOptions, PaginateResult
+
+T = TypeVar('T', bound=orm.Model)
 
 
 async def load_data_callback(
-    result: List[orm.Model] = []
-)-> List[orm.Model]:
-    for r in result:
-        await r.load_data()
-    return result
+    items: List[T] = [],
+) -> List[T]:
+    if len(items) > 0:
+        if hasattr(items[0], "load_data"):
+            for r in items:
+                await r.load_data()
+    return items
 
 
-class Pagination:
-
-    def __init__(
-        self,
-        paginate: Optional[bool] = False,
-        search: Optional[str] = '',
-        objects_per_page: Optional[int] = 5,
-        page: Optional[int] = 0,
-        limit: Optional[int] = 5,
-        order_by: Optional[str] = '-id',
-    ):
-        self.paginate = paginate
-        self.objects_per_page = objects_per_page
-        self.page = page
-        self.limit = limit
-        self.order_by = order_by.split(",")
-        self.search = search
-        self.filters = {}
-        self.orable = {}
-
-    def set_filters(self, **filters) -> None:
-        if("pagination" in filters):
-            filters.pop("pagination")
-        if("paginate" in filters):
-            filters.pop("paginate")
-        if("objects_per_page" in filters):
-            filters.pop("objects_per_page")
-        if("page" in filters):
-            filters.pop("page")
-        if("limit" in filters):
-            filters.pop("limit")
-        if("order_by" in filters):
-            filters.pop("order_by")
-        if("search" in filters):
-            filters.pop("search")
-        self.filters = filters
-
-    def __str__(self) -> str:
-        return "pagination:{}, objects_per_page:{}, page:{}, limit:{}, order_by:{}, filters:{}".format(
-            self.paginate,
-            self.objects_per_page,
-            self.page,
-            self.limit,
-            self.order_by,
-            self.filters
-        )
-
-
-class PaginationResult():
-    items_per_page: int
-    total_objects: int
-    total_pages: int
-    actual_page: int
-    data: List[Any]
+async def get_paginate_result(
+    result: List[T],
+    query: orm.QuerySet,
+    options: PaginateOptions = PaginateOptions(),
+) -> PaginateResult[T]:
+    total_objects = await query.count()
+    total_pages = math.floor(total_objects / options.objects_per_page)
+    if(total_objects % options.objects_per_page) > 0:
+        total_pages += 1
+    r = PaginateResult(
+        items_per_page=options.objects_per_page,
+        total_objects=total_objects,
+        total_pages=total_pages,
+        actual_page=options.page,
+        data=result
+    )
+    return r
 
 
 async def paginate_object(
-    model: orm.Model,
-    options: Pagination = Pagination(),
-    callback: Tuple = None
-) -> Optional[Union[Dict, List]]:
-
+    model: T,
+    options: PaginateOptions = PaginateOptions(),
+    load_data_action: Tuple[Callable[
+        [List[T], Optional[pd.BaseModel]],
+        List[T]
+    ], Dict] = load_data_callback,
+) -> Optional[
+    Union[PaginateResult[T], List[T]]
+]:
     if hasattr(model, 'objects'):
         model = model.objects
     result = []
-    query = model.filter(
+    query: orm.QuerySet = model.filter(
         **options.filters
     )
     if(len(options.orable) > 0):
         query = query.filter(
             orm.or_(**options.orable)
         )
+    offset = options.objects_per_page * options.page
+    query = query.offset(
+        offset
+    )
     if(options.limit == 0):
-        offset = options.objects_per_page * options.page
-        result = await query.offset(
-            offset
-        ).limit(
+        query.limit(
             options.objects_per_page
-        ).order_by(
-            options.order_by
-        ).all()
+        )
     else:
-        offset = options.objects_per_page * options.page
-        result = await query.offset(
-            offset
-        ).limit(
+        query.limit(
             options.limit
-        ).order_by(
-            options.order_by
-        ).all()
-    if(callback is not None and len(callback) > 1):
-        callback[1]['result'] = result
-        result = await callback[0](** callback[1])
+        )
+    result = await query.order_by(
+        options.order_by
+    ).all()
+    if load_data_action is not None and len(result)  == 2:
+        result = await load_data_action[0](result, **load_data_action[1])
     if(options.paginate):
-        total_objects = await query.count()
-        total_pages = math.floor(total_objects / options.objects_per_page)
-        if(total_objects % options.objects_per_page) > 0:
-            total_pages += 1
-        r = {
-            'items_per_page':  options.objects_per_page,
-            'total_objects': total_objects,
-            'total_pages': total_pages,
-            'actual_page': options.page,
-            'data': result
-        }
-        return r
+        return await get_paginate_result(result, query, options)
     else:
         return result
