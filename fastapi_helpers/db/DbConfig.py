@@ -3,9 +3,9 @@ from sqlalchemy import create_engine, MetaData
 from sqlalchemy.engine import Engine
 from sqlalchemy.pool import QueuePool, Pool
 from contextlib import closing
-from fastapi_helpers.logging import DefaultLogger
-from ..settings import DefaultSettings
-from logging import Logger
+from fastapi_helpers.core.settings import DefaultSettings
+from logging import getLogger
+
 
 class DbConfig():
 
@@ -13,24 +13,19 @@ class DbConfig():
     db_url: str
     metadata: MetaData
     database: Database
-    logger: DefaultLogger
 
     def __init__(
-        self, 
-        settings: DefaultSettings, 
-        logger: DefaultLogger = None
+        self,
+        settings: DefaultSettings,
     ) -> None:
         self.db_url = settings.get_db_url()
         self.metadata = MetaData()
         self.database = Database(self.db_url)
-        if(logger is not None):
-            self.logger = logger
-        else:
-            self.logger = Logger("db_connection")
+        self.logger = getLogger("fastapi")
 
     async def connect_db(
-        self, 
-        poolclass:Pool = QueuePool
+        self,
+        poolclass: Pool = QueuePool
     ) -> None:
         if(self.database.is_connected):
             return
@@ -49,6 +44,6 @@ class DbConfig():
             trans.commit()
         self.logger.info("DB reseted")
 
-    async def disconnect_db(self,) ->  None:
+    async def disconnect_db(self,) -> None:
         await self.database.disconnect()
         self.logger.info("DB disconnected")

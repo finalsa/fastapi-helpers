@@ -1,7 +1,7 @@
 from copy import copy
 from typing import Dict
 from fastapi_better_logger import (AWS_DEFAULT_CONFIG, DEFAULT_CONFIG)
-from fastapi_helpers.settings import DefaultSettings
+from fastapi_helpers.core.settings import DefaultSettings
 from datetime import datetime
 import sys
 import os
@@ -13,9 +13,11 @@ TEST_CONFIGURATION = copy(DEFAULT_CONFIG)
 DEV_CONFIGURATION = copy(DEFAULT_CONFIG)
 DEFAULT_LOG_STREAM_NAME = "{machine_name}/{program_name}/{logger_name}/{process_id}"
 
+
 @functools.lru_cache(maxsize=0)
 def get_machine_name():
     return platform.node()
+
 
 def get_stream_name(logger_name):
     return DEFAULT_LOG_STREAM_NAME.format(
@@ -27,6 +29,7 @@ def get_stream_name(logger_name):
         strftime=datetime.utcnow()
     )
 
+
 def get_logger_prod_config(settings: DefaultSettings) -> Dict:
     settings.env = "prod"
     PROD_CONFIGURATION = copy(AWS_DEFAULT_CONFIG)
@@ -34,9 +37,9 @@ def get_logger_prod_config(settings: DefaultSettings) -> Dict:
     stream_name = get_stream_name(settings.app_name)
     for handler in handlers:
         PROD_CONFIGURATION["handlers"][handler]["log_stream_name"] = stream_name
-        PROD_CONFIGURATION["handlers"][handler]["log_group_name"] = settings.app_name + "-" + settings.env
+        PROD_CONFIGURATION["handlers"][handler]["log_group_name"] = settings.app_name + \
+            "-" + settings.env
     return PROD_CONFIGURATION
-
 
 
 def get_logger_default_config(settings: DefaultSettings):
