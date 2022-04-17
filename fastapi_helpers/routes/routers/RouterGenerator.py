@@ -110,4 +110,6 @@ def get_router(
                 id=id,
             )
 
-    return ModelRouter(model, crud, headers, ModelOut)
+    if model_out:
+        return ModelRouter(model, crud, headers, ModelOut)
+    return ModelRouter(model, crud, headers,)

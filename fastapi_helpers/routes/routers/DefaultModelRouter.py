@@ -55,11 +55,16 @@ class DefaultModelRouter(Generic[T]):
     ) -> Optional[Union[List[T], PaginateResult[T]]]:
         options.set_filters(**request.query_params._dict)
         r = await self.crud.get_list(options)
+        if isinstance(r, PaginateResult):
+            r.data = self.parse_response(r.data)
+            return Response(
+                dumps(r.dict()), status.HTTP_200_OK, self.headers
+            )
         return self.parse_response(r)
 
     def parse_response(
         self,
-        items: List[Union[Dict, T]],
+        items: List[Union[Dict, T]] ,
     ) -> List:
         if self.response_model is not None:
             if len(items) > 0:
