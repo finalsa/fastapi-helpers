@@ -1,4 +1,3 @@
-from functools import lru_cache
 from ormar import Model
 from fastapi_helpers.routes.models import PaginateOptions, PaginateResult
 from fastapi_helpers.routes.Paginate import paginate_object, load_data_callback
@@ -23,7 +22,6 @@ class BaseCrud(Generic[T]):
         self.pk_type: Type = model.pk._field.__type__
         self.model = model
 
-    @lru_cache
     def should_generate_id(self, ):
         if self.pk_type is str:
             return True
