@@ -33,7 +33,7 @@ from fastapi_helpers.core.settings import DefaultSettings
 from fastapi_helpers.db import DbConfig
 from fastapi_helpers.db.seeders import DbSeeder
 
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 __all__ = [
     "get_logger_default_config",

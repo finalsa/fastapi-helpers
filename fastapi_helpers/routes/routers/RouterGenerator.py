@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from ormar import Model
 from typing import Type, Dict, NewType
+from pydantic import BaseModel
 from fastapi_helpers.crud import BaseCrud
 from typing import (
     List, Dict, Optional, Union, TypeVar
@@ -17,6 +18,8 @@ ID_ROUTE_LABEL = "/{id}/"
 
 T = TypeVar("T", bound = Model)
 
+pydantic_instances:Dict[str, Type[BaseModel]] ={}
+
 def get_router(
     model: Type[Model],
     crud: BaseCrud[T],
@@ -24,18 +27,24 @@ def get_router(
     model_in: Optional[Type[T]] = None,
     model_out: Optional[Type[T]] = None,
 ) -> DefaultModelRouter[T]:
-
+    global pydantic_instances
     model_name = model.get_name()
-    ModelType = NewType(f"{model_name}", model)
+
+    if model_name not in pydantic_instances:
+        pydantic_instances[model_name] = model.get_pydantic()
+
+    pydantic_instance = pydantic_instances[model_name]
+
+    ModelType = NewType(f"{model_name}", pydantic_instance)
     key_type = model.pk._field.__type__
 
     if model_in is None:
-        ModelIn = NewType(f"{model_name}In", model.get_pydantic())
+        ModelIn = NewType(f"{model_name}In", pydantic_instance)
     else:
         ModelIn = model_in
 
     if model_out is None:
-        ModelOut = NewType(f"{model_name}Out", model.get_pydantic())
+        ModelOut = NewType(f"{model_name}Out", pydantic_instance)
     else:
         ModelOut = model_out
     
