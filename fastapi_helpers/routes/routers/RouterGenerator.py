@@ -11,14 +11,15 @@ from fastapi import (
 )
 from fastapi_helpers.crud import BaseCrud
 from fastapi_helpers.routes.models import PaginateOptions, PaginateResult
-from fastapi_helpers.routes.routers.DefaultModelRouter import DefaultModelRouter
+from fastapi_helpers.routes.routers.DefaultModelRouter import DefaultModelRouter, ErrorSchema
 
 
 ID_ROUTE_LABEL = "/{id}/"
 
-T = TypeVar("T", bound = Model)
+T = TypeVar("T", bound=Model)
 
-pydantic_instances:Dict[str, Type[BaseModel]] ={}
+pydantic_instances: Dict[str, Type[BaseModel]] = {}
+
 
 def get_router(
     model: Type[Model],
@@ -26,9 +27,12 @@ def get_router(
     headers: Dict = None,
     model_in: Optional[Type[T]] = None,
     model_out: Optional[Type[T]] = None,
+
 ) -> DefaultModelRouter[T]:
+
     global pydantic_instances
     model_name = model.get_name()
+    class_name = model.__name__
 
     if model_name not in pydantic_instances:
         pydantic_instances[model_name] = model.get_pydantic()
@@ -47,7 +51,7 @@ def get_router(
         ModelOut = NewType(f"{model_name}Out", pydantic_instance)
     else:
         ModelOut = model_out
-    
+
     KeyType = NewType(f"{model_name}_{key_type}", key_type)
 
     class ModelRouter(DefaultModelRouter):
@@ -63,11 +67,125 @@ def get_router(
             self.crud = crud
             self.router = APIRouter()
             self.response_model = response_model
-            self.router.add_api_route("/", self.read_list, methods=["GET"])
-            self.router.add_api_route(ID_ROUTE_LABEL, self.read, methods=["GET"])
-            self.router.add_api_route("/", self.create, methods=["POST"])
-            self.router.add_api_route(ID_ROUTE_LABEL, self.update, methods=["PUT"])
-            self.router.add_api_route(ID_ROUTE_LABEL, self.delete, methods=["DELETE"])
+            helper_response_model = None
+            if response_model is not None:
+                helper_response_model = response_model
+            else:
+                helper_response_model = pydantic_instance
+
+            self.router.add_api_route(
+                "/",
+                self.read_list,
+                methods=["GET"],
+                summary=f"Read a list of {class_name}.",
+                description=f"Read a list of {class_name}, you can use pagination or not.",
+                responses={
+                    200: {
+                        "description": f"Read a list of {class_name}.",
+                        "content": {
+                            "application/json": {
+                            },
+                        }
+                    },
+                }
+            )
+            self.router.add_api_route(
+                ID_ROUTE_LABEL,
+                self.read,
+                methods=["GET"],
+                summary=f"Get a single instance of {class_name}.",
+                description=f"Get a single instance of {class_name} by its id.",
+                responses={
+                    200: {
+                        "description": f"Successfully retrieved {class_name}.",
+                        "content": {
+                            "application/json": {
+                                "schema": helper_response_model.schema()
+                            }
+                        }
+                    },
+                    404: {
+                        "description": f"Not found {class_name}.",
+                        "content": {
+                            "application/json": {
+                                "schema": ErrorSchema.schema()
+                            }
+                        }
+                    },
+                }
+            )
+            self.router.add_api_route(
+                "/",
+                self.create,
+                methods=["POST"],
+                summary=f"Create a new instance of {class_name}.",
+                description=f"Create a new instance of {class_name} .",
+                status_code=201,
+                responses={
+                    201: {
+                        "description": f"Successful creation of a {class_name} instance.",
+                        "content": {
+                            "application/json": {
+                                "schema": helper_response_model.schema()
+                            }
+                        }
+                    },
+                }
+            )
+            self.router.add_api_route(
+                ID_ROUTE_LABEL,
+                self.update,
+                methods=["PUT"],
+                summary=f"Update an instance of {class_name}.",
+                description=f"Update an instance of {class_name} by its id.",
+                status_code=202,
+                responses={
+                    202: {
+                        "description": f"Successfully updated {class_name}.",
+                        "content": {
+                            "application/json": {
+                                "schema": helper_response_model.schema()
+                            }
+                        }
+                    },
+                    404: {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "schema": ErrorSchema.schema()
+                                }
+                            }
+                        }
+                    },
+                }
+            )
+            self.router.add_api_route(
+                ID_ROUTE_LABEL,
+                self.delete,
+                methods=["DELETE"],
+                summary=f"Delete an instance of {class_name}.",
+                description=f"Delete an instance of {class_name} by its id.",
+                status_code=202,
+                responses={
+                    202: {
+                        "description": f"Successfully deleted {class_name}.",
+                        "content": {
+                            "application/json": {
+                                "schema": helper_response_model.schema()
+                            }
+                        }
+                    },
+                    404: {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "schema": ErrorSchema.schema()
+                                }
+                            }
+                        }
+                    },
+                }
+            )
             self.headers = headers
 
         async def read_list(
