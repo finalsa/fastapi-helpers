@@ -75,7 +75,7 @@ async def paginate_object(
     result = await query.order_by(
         options.order_by
     ).all()
-    if load_data_action is not None and len(result) == 2:
+    if load_data_action is not None and len(load_data_action) == 2:
         result = await load_data_action[0](result, **load_data_action[1])
     if(options.paginate):
         return await get_paginate_result(result, query, options)
