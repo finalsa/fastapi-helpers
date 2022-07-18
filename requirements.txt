@@ -37,6 +37,6 @@ SQLAlchemy==1.4.38
 starlette==0.19.1
 toml==0.10.2
 tomli==2.0.1
-typing_extensions==3.7.2
+typing_extensions==3.10.0.1
 urllib3==1.26.10
 watchtower==3.0.0
