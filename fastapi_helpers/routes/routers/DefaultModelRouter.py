@@ -180,7 +180,7 @@ class DefaultModelRouter(Generic[T]):
             *,
             request: Request,
             options: PaginateOptions = Depends(),
-    ) -> Response | list:
+    ) -> Union[Response, List]:
         params = dict(request.query_params)
         options.set_filters(**params)
         r = await self.crud.get_list(options)

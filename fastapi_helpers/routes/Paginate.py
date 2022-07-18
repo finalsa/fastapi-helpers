@@ -2,7 +2,7 @@ import math
 from typing import (
     List, Optional, Union,
     Callable, TypeVar, Coroutine,
-    Tuple, Dict
+    Tuple, Dict, Any
 )
 
 import ormar as orm
@@ -48,7 +48,7 @@ async def paginate_object(
         model: T,
         options: PaginateOptions = PaginateOptions(),
         load_data_action: Tuple[
-            Coroutine[List[T], Optional[pd.BaseModel], List[T]],
+            Callable[[List[T], Optional[pd.BaseModel]], Coroutine[Any, Any, List[T]]],
             Dict
         ] = load_data_callback,
 ) -> Optional[
