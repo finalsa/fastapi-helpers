@@ -33,9 +33,10 @@ requests==2.28.1
 s3transfer==0.6.0
 six==1.16.0
 sniffio==1.2.0
-SQLAlchemy==1.4.39
+SQLAlchemy==1.4.38
 starlette==0.19.1
 toml==0.10.2
-typing-extensions==4.3.0
+tomli==2.0.1
+typing_extensions==4.3.0
 urllib3==1.26.10
 watchtower==3.0.0
