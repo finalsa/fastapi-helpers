@@ -5,7 +5,7 @@ from fastapi_helpers.core.logging import (
     get_stream_name,
     get_logger_prod_config,
 )
-from fastapi_helpers.routes.middlewares import(
+from fastapi_helpers.routes.middlewares import (
     get_real_ip,
     get_real_ip_from_headers,
     HeadersMiddleware,
@@ -15,8 +15,9 @@ from fastapi_helpers.routes import (
     paginate_object
 )
 from fastapi_helpers.routes.routers import (
-   DefaultModelRouter,
-   get_router
+    DefaultModelRouter,
+    ErrorSchema,
+    get_router
 )
 from fastapi_helpers.routes.models import (
     PaginateOptions,
@@ -33,7 +34,7 @@ from fastapi_helpers.core.settings import DefaultSettings
 from fastapi_helpers.db import DbConfig
 from fastapi_helpers.db.seeders import DbSeeder
 
-__version__ = "0.2.3"
+__version__ = "0.2.4"
 
 __all__ = [
     "get_logger_default_config",
@@ -47,9 +48,9 @@ __all__ = [
     "get_real_ip_from_headers",
     "HeadersMiddleware",
     "DefaultModelRouter",
+    "ErrorSchema",
     "load_data_callback",
     "paginate_object",
-    "Pagination",
     "BaseCrud",
     "to_dict",
     "Encoder",

@@ -8,7 +8,7 @@ For installing this package:
 pip install fastapi-helpers
 ```
 
-If you need a default settings for your app, it includes an implemntation BaseSettings of pydantic.
+If you need a default settings for your app, it includes an implementation BaseSettings of pydantic.
 
 ```python
 from fastapi_helpers import DefaultSettings
@@ -26,7 +26,7 @@ class Settings(DefaultSettings):
 settings = Settings(env_path)
 ```
 
-If you need a logger, it includes an implemntation a colored console, and in prod envs it will log to aws with the help of watchtower.
+If you need a logger, it includes an implementation a colored console, and in prod envs it will log to aws with the help of watchtower.
 
 ```python
 from fastapi_helpers import DefaultLogger
@@ -35,7 +35,7 @@ from .config import settings
 logger = DefaultLogger("your-app-name", settings)
 ```
 
-If you need to connect to a db super fast, the only thing you need to do is to:
+If you need to connect to a db superfast, the only thing you need to do is to:
 
 ```python
 from fastapi_helpers import DbConfig
@@ -45,10 +45,10 @@ from core.logger import logger
 db_config = DbConfig(settings, logger)
 ```
 
-The are other tools for making the usage of ormar and fastapi even easier.
+There are other tools for making the usage of ormar and fastapi even easier.
 
 
-I would realy like to make this tools bigger, but I´m looking for help for documenting this package.
+I would really like to make this tools bigger, but I´m looking for help for documenting this package.
 
 
 Happy codding!

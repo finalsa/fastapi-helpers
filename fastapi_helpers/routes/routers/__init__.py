@@ -1,2 +1,2 @@
 from .RouterGenerator import get_router
-from .DefaultModelRouter import DefaultModelRouter
+from .DefaultModelRouter import DefaultModelRouter, ErrorSchema

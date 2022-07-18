@@ -5,32 +5,35 @@ from sqlalchemy.pool import QueuePool, Pool
 from contextlib import closing
 from fastapi_helpers.core.settings import DefaultSettings
 from logging import getLogger
+from typing import Type
 
 
-class DbConfig():
-
+class DbConfig:
     engine: Engine
     db_url: str
     metadata: MetaData
     database: Database
 
     def __init__(
-        self,
-        settings: DefaultSettings,
+            self,
+            settings: DefaultSettings,
     ) -> None:
         self.db_url = settings.get_db_url()
         self.metadata = MetaData()
         self.database = Database(self.db_url)
-        self.logger = getLogger("fastapi")
+        self.logger = getLogger("fastapi.database")
 
     async def connect_db(
-        self,
-        poolclass: Pool = QueuePool
+            self,
+            pool_class: Type[Pool] = None
     ) -> None:
-        if(self.database.is_connected):
+        if pool_class is None:
+            pool_class = QueuePool
+        if self.database.is_connected:
+            self.logger.info("DB is already connected")
             return
         self.engine = create_engine(
-            self.db_url, poolclass=poolclass
+            self.db_url, poolclass=pool_class
         )
         self.metadata.create_all(self.engine)
         await self.database.connect()
@@ -42,8 +45,8 @@ class DbConfig():
             for table in reversed(self.metadata.sorted_tables):
                 con.execute(table.delete())
             trans.commit()
-        self.logger.info("DB reseted")
+        self.logger.info("DB rested")
 
-    async def disconnect_db(self,) -> None:
+    async def disconnect_db(self, ) -> None:
         await self.database.disconnect()
         self.logger.info("DB disconnected")

@@ -1,4 +1,3 @@
-from email.policy import default
 import uuid
 import ormar
 from fastapi import FastAPI
@@ -13,7 +12,6 @@ from fastapi_helpers import (
     get_logger_default_config,
 )
 from typing import Optional
-import logging
 import logging.config
 from fastapi.testclient import TestClient
 import sys
@@ -26,13 +24,11 @@ import pytest_asyncio
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
 
-
 settings = DefaultSettings()
 settings.env = "test"
 logging.config.dictConfig(get_logger_default_config(settings))
 logger = logging.getLogger("fastapi")
 db_config = DbConfig(settings)
-
 
 app = FastAPI()
 metadata = sqlalchemy.MetaData()
@@ -88,7 +84,6 @@ class User(ormar.Model):
 
 
 class ItemResult(pydantic.BaseModel):
-
     id: int
     name: str
     pydantic_int: Optional[int]
@@ -96,14 +91,14 @@ class ItemResult(pydantic.BaseModel):
 
 class ItemRequest(pydantic.BaseModel):
     name: str
-    password:  str
+    password: str
 
 
 item_crud = BaseCrud(Item)
 user_crud = BaseCrud(User)
 
-item_router = get_router(Item, item_crud, model_in=ItemRequest, model_out=ItemResult)
-user_router = get_router(User, user_crud, model_in=ItemRequest)
+item_router = get_router(Item, item_crud, model_in_type=ItemRequest, model_out_type=ItemResult)
+user_router = get_router(User, user_crud, model_in_type=ItemRequest)
 
 
 @pytest_asyncio.fixture(autouse=True, scope="module")
@@ -122,12 +117,10 @@ app = FastAPI(
     openapi_url=settings.get_open_api_path()
 )
 
-
-app.include_router(item_router.router,  prefix="/items")
+app.include_router(item_router.router, prefix="/items")
 app.include_router(user_router.router, prefix="/users")
 
 worker = Worker(db_config)
-
 
 client = TestClient(app)
 
@@ -143,18 +136,19 @@ async def test_read_main():
     assert response.status_code == 200
 
 
-
 @pytest.mark.asyncio()
 async def test_uuid_crud():
-    await user_crud.create({"name":"test"})
+    await user_crud.create({"name": "test"})
     response = client.request("GET", "/users/")
     assert len(response.json()) == 1
     assert response.status_code == 200
+
 
 @pytest.mark.asyncio()
 async def test_read_one():
     response = client.request("GET", "/items/1/")
     item = response.json()
+    print(item)
     assert item["id"] == 1
     assert item["name"] == "test"
     assert item["pydantic_int"] is None
@@ -177,7 +171,6 @@ async def test_read_pagination():
     assert data["items_per_page"] == 1
 
 
-
 @pytest.mark.asyncio()
 async def test_uuid_pagination():
     response = client.request("GET", "/users/?paginate=true&objects_per_page=1")
@@ -188,6 +181,7 @@ async def test_uuid_pagination():
     helper_id = uuid.UUID(data["data"][0]["id"])
     assert helper_id.version == 4
     assert helper_id.is_safe
+
 
 @pytest.mark.asyncio()
 async def test_write_one():
