@@ -1,7 +1,7 @@
 from sqlalchemy.pool import NullPool
 from fastapi_helpers.db import DbConfig
 from logging import getLogger
-from typing import Any, Callable, Coroutine
+from typing import Any
 
 
 class Worker:
@@ -14,7 +14,7 @@ class Worker:
         self.db_config = db_config
         self.logger = getLogger("fastapi")
 
-    def use_db_connection(self, func) -> Callable[[tuple[Any, ...], dict[str, Any]], Coroutine[Any, Any, Any]]:
+    def use_db_connection(self, func):
         """Decorator that connects to the db."""
 
         async def wrap(*args, **kwargs) -> Any:
