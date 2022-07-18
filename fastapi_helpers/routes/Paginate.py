@@ -48,7 +48,7 @@ async def paginate_object(
         model: T,
         options: PaginateOptions = PaginateOptions(),
         load_data_action: Tuple[
-            Callable[[List[T], Optional[pd.BaseModel]], Coroutine[List[T]]],
+            Coroutine[List[T], Optional[pd.BaseModel], List[T]],
             Dict
         ] = load_data_callback,
 ) -> Optional[

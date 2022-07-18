@@ -1,13 +1,15 @@
-from ormar import Model
-from typing import Type, NewType
-from pydantic import BaseModel
 from typing import (
     List, Dict, Optional, Union, TypeVar,
     Callable
 )
+from typing import Type, NewType
+
 from fastapi import (
     Request, Depends,
 )
+from ormar import Model
+from pydantic import BaseModel
+
 from fastapi_helpers.crud import BaseCrud
 from fastapi_helpers.routes.models import PaginateOptions, PaginateResult
 from fastapi_helpers.routes.routers.DefaultModelRouter import DefaultModelRouter
@@ -20,11 +22,11 @@ pydantic_instances: Dict[str, Type[BaseModel]] = {}
 
 
 def get_router(
-        base_model: T,
+        base_model: Union[T, Type[Model]],
         base_crud: BaseCrud[T],
         output_headers: Dict = None,
-        model_in_type: Optional[Type[T]] = None,
-        model_out_type: Optional[Type[T]] = None,
+        model_in_type: Optional[Union[Type[BaseModel], Type[Model]]] = None,
+        model_out_type: Optional[Union[Type[BaseModel], Type[Model]]] = None,
 
 ) -> DefaultModelRouter[T]:
     global pydantic_instances
@@ -35,16 +37,16 @@ def get_router(
 
     pydantic_instance = pydantic_instances[model_name]
 
-    model_type = NewType(f"{model_name}", pydantic_instance)
+    model_type = pydantic_instance
     key_type = base_model.pk._field.__type__
 
     if model_in_type is None:
-        model_in_type = NewType(f"{model_name}In", pydantic_instance)
+        model_in_type = pydantic_instance
     else:
         model_in_type = model_in_type
 
     if model_out_type is None:
-        model_out_type = NewType(f"{model_name}Out", pydantic_instance)
+        model_out_type = pydantic_instance
     else:
         model_out_type = model_out_type
 

@@ -1,4 +1,3 @@
-from email.policy import default
 import uuid
 import ormar
 from fastapi import FastAPI
@@ -13,7 +12,6 @@ from fastapi_helpers import (
     get_logger_default_config,
 )
 from typing import Optional
-import logging
 import logging.config
 from fastapi.testclient import TestClient
 import sys
@@ -150,6 +148,7 @@ async def test_uuid_crud():
 async def test_read_one():
     response = client.request("GET", "/items/1/")
     item = response.json()
+    print(item)
     assert item["id"] == 1
     assert item["name"] == "test"
     assert item["pydantic_int"] is None

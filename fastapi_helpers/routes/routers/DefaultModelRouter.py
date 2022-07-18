@@ -25,7 +25,7 @@ class ErrorSchema(BaseModel):
     traceback: str
 
 
-ID_ROUTE_LABEL = "/{id}/"
+ID_ROUTE_LABEL = "/{model_id}/"
 
 T = TypeVar("T", bound=Model)
 
