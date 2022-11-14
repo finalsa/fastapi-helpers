@@ -66,7 +66,7 @@ setup(
         'pydantic>=1.8.2',
         "fastapi>=0.78.0",
         "fastapi-better-logger>=0.0.4",
-        "typing_extensions>=3.7,<3.10.0.3",
+        "typing_extensions>=4.0.0",
         "watchtower>=3.0.0",
         "boto3>=1.20.3"
     ],
