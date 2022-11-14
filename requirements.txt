@@ -14,6 +14,7 @@ databases==0.6.0
 fastapi==0.87.0
 fastapi-better-logger==0.0.4
 greenlet==2.0.1
+httpx==0.23.0
 idna==3.3
 iniconfig==1.1.1
 jmespath==1.0.1
