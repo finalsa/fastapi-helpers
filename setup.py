@@ -57,7 +57,7 @@ setup(
     package_data={PACKAGE: ["py.typed"]},
     include_package_data=True,
     zip_safe=True,
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     data_files=[("", ["LICENSE.md"])],
     install_requires=[
         "aiosqlite>=0.17.0",
