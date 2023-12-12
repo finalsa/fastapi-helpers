@@ -60,7 +60,7 @@ setup(
     python_requires=">=3.8",
     data_files=[("", ["LICENSE.md"])],
     install_requires=[
-        "argon2-cffi>=23.1.0"
+        "argon2-cffi>=23.1.0",
         "aiosqlite>=0.19.0",
         "ormar>=0.12.2",
         'pydantic>=1.10.8',
