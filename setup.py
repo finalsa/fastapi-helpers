@@ -60,13 +60,12 @@ setup(
     python_requires=">=3.8",
     data_files=[("", ["LICENSE.md"])],
     install_requires=[
-        "aiosqlite>=0.17.0",
-        "argon2-cffi>=21.3.0",
-        "ormar>=0.11.00",
-        'pydantic>=1.8.2',
-        "fastapi>=0.78.0",
-        "fastapi-better-logger>=0.0.4",
-        "typing_extensions>=4.0.0",
+        "aiosqlite>=0.19.0",
+        "ormar>=0.12.2",
+        'pydantic>=1.10.8',
+        "fastapi>=0.105.0",
+        "fastapi-better-logger>=0.0.5",
+        "typing_extensions>=4.9.0",
         "watchtower>=3.0.0",
         "boto3>=1.20.3"
     ],
@@ -75,7 +74,6 @@ setup(
         "mysql": ["aiomysql", "pymysql"],
         "sqlite": ["aiosqlite"],
         "orjson": ["orjson"],
-        "crypto": ["cryptography"],
     },
     classifiers=[
         "Intended Audience :: Developers",
